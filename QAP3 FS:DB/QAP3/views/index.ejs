@@ -1,0 +1,181 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>Coffee Shop Inventory</title>
+    <style>
+      body {
+        font-family: Arial, sans-serif;
+        margin: 0;
+        padding: 20px;
+        background-color: #f6d5d5;
+      }
+
+      h1 {
+        color: #333;
+      }
+
+      .item {
+        background-color: #fff;
+        padding: 20px;
+        margin-bottom: 20px;
+        border-radius: 5px;
+        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+      }
+
+      .item h2 {
+        margin-top: 0;
+      }
+
+      .item p {
+        color: #777;
+      }
+
+      .item-actions {
+        display: flex;
+        justify-content: space-between;
+        margin-top: 10px;
+      }
+
+      .item-actions button {
+        padding: 8px 12px;
+        border-radius: 3px;
+        border: none;
+        cursor: pointer;
+      }
+
+      .item-actions button.edit {
+        background-color: #7ea5e4;
+        color: #fff;
+      }
+
+      .item-actions button.delete {
+        background-color: #ed6270;
+        color: #fff;
+      }
+
+      .add {
+        margin-top: 20px;
+        padding: 8px 12px;
+        border-radius: 3px;
+        border: none;
+        background-color: #85e3ac;
+        color: #fff;
+        cursor: pointer;
+      }
+    </style>
+  </head>
+  <body>
+    <h1>Coffee Shop Inventory</h1>
+
+    <% inventory.forEach(function(item) { %>
+    <div class="item">
+      <h2><%= item.name %></h2>
+      <p>Quantity: <%= item.quantity %></p>
+      <p>Price: $<%= item.price %></p>
+      <div class="item-actions">
+        <button class="edit" onclick="editItem('<%= item.id %>')">Edit</button>
+        <button class="delete" onclick="deleteItem('<%= item.id %>')">
+          Delete
+        </button>
+      </div>
+    </div>
+    <% }); %>
+
+    <div class="item">
+      <h2>Coffee Beans</h2>
+      <p>Quantity: 10</p>
+      <p>Price: $25</p>
+      <div class="item-actions">
+        <button class="edit" onclick="editItem('coffee-beans')">
+          Edit
+        </button>
+        <button class="delete" onclick="deleteItem('coffee-beans')">
+          Delete
+        </button>
+      </div>
+    </div>
+
+    <div class="item">
+      <h2>Coffee Mug</h2>
+      <p>Quantity: 15</p>
+      <p>Price: $8</p>
+      <div class="item-actions">
+        <button class="edit" onclick="editItem('coffee-mug')">Edit</button>
+        <button class="delete" onclick="deleteItem('coffee-mug')">
+          Delete
+        </button>
+      </div>
+    </div>
+
+    <div class="item">
+      <h2>Reusable Cup</h2>
+      <p>Quantity: 30</p>
+      <p>Price: $10</p>
+      <div class="item-actions">
+        <button class="edit" onclick="editItem('reusable-cup')">Edit</button>
+        <button class="delete" onclick="deleteItem('reusable-cup')">
+          Delete
+        </button>
+      </div>
+    </div>
+
+    <button class="add" onclick="addItem()">Add Item</button>
+
+    <script>
+      function editItem(itemId) {
+        fetch(`/api/data/${itemId}`, {
+          method: "PUT",
+          headers: {
+            "Content-Type": "application/json",
+          },
+        })
+          .then((response) => {
+            if (response.ok) {
+              console.log("Item updated");
+            } else {
+              console.error("Failed to update item");
+            }
+          })
+          .catch((error) => {
+            console.error("Error updating item", error);
+          });
+      }
+
+      function deleteItem(itemId) {
+        fetch(`/api/data/${itemId}`, {
+          method: "DELETE",
+        })
+          .then((response) => {
+            if (response.ok) {
+              console.log("item deleted");
+            } else {
+              console.error("failed to delete item");
+            }
+          })
+          .catch((error) => {
+            console.error("error deleting item", error);
+          });
+      }
+
+      function addItem() {
+        fetch("/api/data", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+        })
+          .then((response) => {
+            if (response.ok) {
+              console.log("item added");
+            } else {
+              console.error("failed to add item");
+            }
+          })
+          .catch((error) => {
+            console.error("error adding item", error);
+          });
+      }
+
+    </script>
+  </body>
+</html>
